@@ -1,4 +1,4 @@
-Word Battle Agent Development Environment v1
+Word Battle Agent Development Environment v1.1
 --------------------------------------------------------------------------------
 Thank you for downloading this program!
 
@@ -9,6 +9,8 @@ Word Battle Agent Development Environment is a program designed for agent develo
 SETUP
 --------------------------------------------------------------------------------
 Ensure that you have downloaded Python at 3.7 or 3.8 and PyCharm so that the game can be properly executed if run from there and for ease of installation of the all essential modules to run the game. Without these modules the game will crash.
+
+Open the python file and go to the class Custom_Agent to write your own agent.
 
 The game includes the standard dictionary or lexicon of the English language.
 
@@ -21,10 +23,14 @@ PLAYING THE GAME
 To begin playing the game, click the run Word Battle Agent Development Environment.bat file.
 The program is opened in an command prompt.
 
-NOTES:
+NOTES
 --------------------------------------------------------------------------------
 Do not use the "Language" text file as it can no longer be read by the game, use the "English" text file instead.
 Do not open old .wbr files as they can no longer be read by the game.
+
+UPDATE V1.1
+--------------------------------------------------------------------------------
+**15/03/2021** Board UI has been improved.
 
 CONTACT INFORMATION
 --------------------------------------------------------------------------------
