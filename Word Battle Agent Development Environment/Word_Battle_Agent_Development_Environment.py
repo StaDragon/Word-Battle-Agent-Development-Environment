@@ -5,7 +5,7 @@
 
 __all__ = ["__title__", "__version__", "__author__", "__license__", "__copyright__"]
 __title__ = "Word Battle Agent Development Environment"
-__version__ = "1"
+__version__ = "1.1"
 __author__ = "Jordan Memphis Leef"
 __license__ = "Freeware"
 __copyright__ = "Copyright (C) Jordan Memphis Leef"
@@ -598,8 +598,8 @@ class Board:
                 for coord in path:
                     temp_colour_map[coord] = "GREEN"
 
-                    # Labelling the succeeding position with empty string
-                    temp_board[coord] = " "
+                    # Labelling the succeeding position with an dot
+                    temp_board[coord] = "•"
 
                 # Labelling the end positions with an integer to indicate selection number
                 temp_board[path[-1]] = str(end_path_numbering)
@@ -650,7 +650,11 @@ class Board:
 
         # Labelling each path with its corresponding character and assign each coordinate with its colour
         for coord in self.selected_path:
-            temp_board[coord] = self.matrix[coord]
+            if self.matrix[coord] == " ":
+                temp_board[coord] = "•"
+            else:
+                temp_board[coord] = self.matrix[coord]
+
             temp_colour_map[coord] = "GREEN"
 
         # Assign the first cell with its colour
@@ -690,7 +694,7 @@ class Board:
             else:
                 print(f"{self.previous_player} placed down {self.word}")
 
-    def display_board(self, board=None, colour_map=None, get_str_board=False) -> int:
+    def display_board(self, board=None, colour_map=None, get_str_board=False, computer_player=False) -> int:
         """Display the board."""
         def chunks(data: Dict[Tuple[int, int], str], SIZE=10000) -> Generator[Dict[Tuple[int, int], str], any, None]:
             """Divide the data into chunks."""
@@ -713,6 +717,12 @@ class Board:
             for coord in self.previous_selected_path:
                 self.colour_map[coord] = "CYAN"
 
+                if computer_player:
+                    self.colour_map[coord] = "GREEN"
+
+            if computer_player:
+                self.colour_map[self.previous_selected_path[0]] = "YELLOW"
+
         # Create a list of chunks
         chunks_list = []
 
@@ -726,36 +736,59 @@ class Board:
 
         # Create representation of the board
         str_board = Fore.WHITE + Style.BRIGHT + " "
+        str_board += " "
 
         # Labelling top columns
         for column_number in range(self.length):
-            if column_number < 10:
+            if column_number < 9:
                 str_board += f"   {column_number + 1}"
             else:
                 str_board += f"  {column_number + 1}"
 
+        str_board +="\n   ┌───┬─"
+
+        for _ in range(self.length - 2):
+            str_board+= "──┬─"
+
+        str_board += "──┐\n"
+
         # Labelling left rows
-        str_board += "\n"
+        lines = 0
 
         for chunk in chunks_list:
             if chunks_list.index(chunk) < 9:
-                str_board += f" {str(chunks_list.index(chunk) + 1)}"
+                str_board += f"  {str(chunks_list.index(chunk) + 1)}"
             else:
-                str_board += str(chunks_list.index(chunk) + 1)
+                str_board += f" {str(chunks_list.index(chunk) + 1)}"
+
 
             # Assign each string to its corresponding colour depending on the coordinates
             for coord, colour in chunk.items():
                 set_colour = getattr(Fore, colour)
-                str_board += set_colour + f" [{board[coord]}]" + Fore.WHITE
+                str_board += Fore.WHITE + "│" + set_colour + f" {board[coord]} " + Fore.WHITE
+
 
             # Labelling right rows
-            str_board += f" {str(chunks_list.index(chunk) + 1)}\n"
+            str_board += f"│{str(chunks_list.index(chunk) + 1)}\n   ├─"
+            for _ in range(self.length - 1):
+                str_board += "──┼─"
+
+            if lines < self.length - 1:
+                str_board += "──┤\n"
+                lines += 1
+            else:
+                str_board += "\r"
 
         # Labelling bottom columns
-        str_board += " "
+        str_board +="   └───┴─"
+
+        for _ in range(self.length - 2):
+            str_board+= "──┴─"
+
+        str_board += "──┘\n  "
 
         for column_number in range(self.length):
-            if column_number < 10:
+            if column_number < 9:
                 str_board += f"   {column_number + 1}"
             else:
                 str_board += f"  {column_number + 1}"
@@ -1059,10 +1092,19 @@ class Official_Agent:
 
         for coord in self.considered_starting_position:
             self.analyse_board.starting_position = coord
+
+            if self.analyse_board.matrix[coord] == " ":
+                self.analyse_board.matrix[coord] = "•"
+
             temp_colour_map[coord] = "YELLOW"
 
         print("Considered Starting Positions:", end='')
         self.analyse_board.display_board(None, temp_colour_map)
+
+        for coord in self.considered_starting_position:
+            if self.analyse_board.matrix[coord] == "•":
+                self.analyse_board.matrix[coord] = " "
+
         print("Word(s) Used: " + Fore.RED + Style.BRIGHT + ', '.join(self.analyse_used_words))
 
         if self.draw_detected:
@@ -1076,7 +1118,7 @@ class Official_Agent:
                 starting_position = None
                 word = None
 
-        print(Fore.WHITE + Style.BRIGHT + f"\nWord Placed At {starting_position}: {word}")
+        print(Fore.WHITE + Style.BRIGHT + f"\nPlacing Word At {starting_position}: {word}")
 
         try:
             self.analyse_board.selected_path = self.final_selected_path
@@ -1084,7 +1126,7 @@ class Official_Agent:
         except TypeError:
             pass
 
-        self.analyse_board.display_board()
+        self.analyse_board.display_board(None, None, False, True)
         print("Press any key to continue...")
         msvcrt.getch()
 
