@@ -36,7 +36,7 @@ Do not open old .wbr files as they can no longer be read by the game.
 
 UPDATE V1.1
 --------------------------------------------------------------------------------
-Board UI has been improved.
+15/03/2021 Board UI has been improved.
 
 CONTACT INFORMATION
 --------------------------------------------------------------------------------
