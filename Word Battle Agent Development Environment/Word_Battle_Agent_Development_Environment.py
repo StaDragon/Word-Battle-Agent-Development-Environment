@@ -1665,11 +1665,11 @@ def main():
         global game_word_list, vocab_1, vocab_2
         clear_screen(0)
         print(Fore.WHITE + Style.BRIGHT + f"{'-' * 32}\n{__title__} v{__version__}\nWritten in Python {PY_VERSION}\nDeveloped by {__author__}\n{'-' * 32}")
-        print("[1] Play against agent")
-        print("[2] Simulate agents")
-        print("[3] Watch replays")
-        print("[4] View README file")
-        print("[5] Exit")
+        menu_item = ["Play against agent", "Simulate agents", "Watch replays", "View README file", "Exit"]
+
+        for i in menu_item:
+            print([menu_item.index(i) + 1], i)
+
         selection = input("\nSelection: ")
 
         if selection == "1":
